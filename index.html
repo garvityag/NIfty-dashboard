@@ -430,11 +430,11 @@
         <span class="sub">26 MAY EXPIRY</span>
       </div>
       <div class="ltp-row">
-        <div><div class="label">Est. LTP</div><div class="ltp-v">₹120</div></div>
-        <div><div class="label">Lot Size</div><div class="ltp-big2">75</div></div>
+        <div><div class="label">Live LTP</div><div class="ltp-v">₹137</div></div>
+        <div><div class="label">Lot Size</div><div class="ltp-big2">65</div></div>
         <div><div class="label">Expiry</div><div class="ltp-big2" style="color:var(--red);font-size:18px;">2 Days</div></div>
       </div>
-      <div class="dnote"><span class="est">ESTIMATED</span> Verify the real PE LTP on your broker app at 9:30 AM</div>
+      <div class="dnote"><span class="est">BROKER-SYNCED</span> ₹137.35 live · 1 lot ≈ ₹8,927 margin · re-check before entry</div>
       <div class="note-box nb-red"><strong style="color:var(--red)">Why this strike?</strong> Gap-down opening expected near 23,450. The 23,400 PE is ~50 pts OTM — near-ATM with high delta, the right choice for a 2-day expiry where far-OTM options decay too fast.</div>
       <div class="stat2">
         <div class="pill"><div class="k">IV (est.)</div><div class="v yellow">~18–20%</div></div>
@@ -452,9 +452,9 @@
       </div>
       <div class="chart-box" style="height:250px;"><canvas id="cPayoff"></canvas></div>
       <div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;font-size:11px;color:var(--t2);">
-        <span>🟢 Profit zone: spot below <strong class="mono">23,280</strong></span>
-        <span>🟡 Break-even: <strong class="mono">₹23,280</strong></span>
-        <span>🔴 Max loss: <strong class="mono">₹9,000</strong> (premium only)</span>
+        <span>🟢 Profit zone: spot below <strong class="mono">23,263</strong></span>
+        <span>🟡 Break-even spot: <strong class="mono">23,263</strong></span>
+        <span>🔴 Max loss: <strong class="mono">₹8,905</strong> (premium only)</span>
       </div>
     </div>
 
@@ -462,12 +462,12 @@
     <div class="card c-6">
       <div class="label" style="margin-bottom:14px;">Entry &amp; Exit Price Ladder</div>
       <div class="ladder">
-        <div class="rung t2"><span class="tag t2">Target 2</span><span class="pr" style="color:#26ff9b">₹210</span><span class="nt">Exit everything · +₹6,750/lot</span></div>
-        <div class="rung t1"><span class="tag t1">Target 1</span><span class="pr" style="color:var(--green)">₹160</span><span class="nt">Book 50% · +₹1,500 locked</span></div>
-        <div class="rung entry"><span class="tag entry">Entry</span><span class="pr" style="color:var(--red)">₹115–125</span><span class="nt">9:30–9:45 AM window</span></div>
-        <div class="rung sl"><span class="tag sl">Stop Loss</span><span class="pr" style="color:var(--orange)">₹78</span><span class="nt">Exit immediately · −₹3,150/lot</span></div>
+        <div class="rung t2"><span class="tag t2">Target 2</span><span class="pr" style="color:#26ff9b">₹235</span><span class="nt">Exit everything · +₹6,370/lot</span></div>
+        <div class="rung t1"><span class="tag t1">Target 1</span><span class="pr" style="color:var(--green)">₹180</span><span class="nt">Book 50% · +₹1,400 locked</span></div>
+        <div class="rung entry"><span class="tag entry">Entry</span><span class="pr" style="color:var(--red)">₹132–142</span><span class="nt">9:30–9:45 AM window</span></div>
+        <div class="rung sl"><span class="tag sl">Stop Loss</span><span class="pr" style="color:var(--orange)">₹95</span><span class="nt">Exit immediately · −₹2,730/lot</span></div>
       </div>
-      <div class="rr"><span class="label" style="color:var(--t3)">Risk : Reward</span><span class="v">1 : 2.1</span><span class="sub">₹1 risked → ₹2.1 potential</span></div>
+      <div class="rr"><span class="label" style="color:var(--t3)">Risk : Reward</span><span class="v">1 : 2.3</span><span class="sub">₹1 risked → ₹2.3 potential</span></div>
     </div>
 
     <!-- ENTRY RULES -->
@@ -477,7 +477,7 @@
         <div class="label" style="color:var(--red);margin-bottom:8px;">✓ BUY ONLY WHEN</div>
         <div style="display:flex;gap:8px;margin-bottom:7px;"><span style="color:var(--red)">✓</span><span style="color:var(--t2)">NIFTY opens gap-down &amp; stays <strong style="color:var(--t1)">below 23,450</strong> for 5 minutes</span></div>
         <div style="display:flex;gap:8px;margin-bottom:7px;"><span style="color:var(--red)">✓</span><span style="color:var(--t2)">No sharp green recovery candle in first 5 min</span></div>
-        <div style="display:flex;gap:8px;"><span style="color:var(--red)">✓</span><span style="color:var(--t2)">PE LTP between ₹110–135 (don't chase)</span></div>
+        <div style="display:flex;gap:8px;"><span style="color:var(--red)">✓</span><span style="color:var(--t2)">PE LTP between ₹130–145 (don't chase higher)</span></div>
       </div>
       <div class="note-box nb-green">
         <div class="label" style="color:var(--green);margin-bottom:8px;">✗ DO NOT BUY IF</div>
@@ -492,31 +492,31 @@
     <!-- FUND TIERS -->
     <div class="card c-5">
       <div class="label" style="margin-bottom:3px;">How Much Capital Do You Need?</div>
-      <div class="sub" style="margin-bottom:16px;">LTP ₹120 × Lot 75 = ₹9,000 per lot</div>
-      <div class="tier"><span class="dot d1"></span><div style="flex:1"><div class="nm">TIER 1 — STARTER</div><div class="ds">1 lot · high risk</div></div><div style="text-align:right"><div class="amt" style="color:var(--t2)">₹9,000</div><div class="ds">1 lot</div></div></div>
-      <div class="tier rec"><span class="dot d2"></span><div style="flex:1"><div class="nm" style="color:var(--green)">TIER 2 — STANDARD ⭐</div><div class="ds">2 lots · recommended</div></div><div style="display:flex;align-items:center;gap:10px"><div style="text-align:right"><div class="amt" style="color:var(--green)">₹18,000</div><div class="ds">2 lots</div></div><span class="rectag">BEST</span></div></div>
-      <div class="tier"><span class="dot d3"></span><div style="flex:1"><div class="nm">TIER 3 — STRONG</div><div class="ds">4 lots · comfortable</div></div><div style="text-align:right"><div class="amt" style="color:var(--blue)">₹36,000</div><div class="ds">4 lots</div></div></div>
-      <div class="note-box nb-green"><strong style="color:var(--green)">ATLAS recommends Tier 2.</strong> Start with ₹18,000. Risk = ₹2,700/lot. In options, max loss is only the premium paid — your full capital is never at risk.</div>
+      <div class="sub" style="margin-bottom:16px;">LTP ₹137 × Lot 65 = ₹8,905 per lot</div>
+      <div class="tier"><span class="dot d1"></span><div style="flex:1"><div class="nm">TIER 1 — STARTER</div><div class="ds">1 lot · high risk</div></div><div style="text-align:right"><div class="amt" style="color:var(--t2)">₹8,905</div><div class="ds">1 lot</div></div></div>
+      <div class="tier rec"><span class="dot d2"></span><div style="flex:1"><div class="nm" style="color:var(--green)">TIER 2 — STANDARD ⭐</div><div class="ds">2 lots · recommended</div></div><div style="display:flex;align-items:center;gap:10px"><div style="text-align:right"><div class="amt" style="color:var(--green)">₹17,810</div><div class="ds">2 lots</div></div><span class="rectag">BEST</span></div></div>
+      <div class="tier"><span class="dot d3"></span><div style="flex:1"><div class="nm">TIER 3 — STRONG</div><div class="ds">4 lots · comfortable</div></div><div style="text-align:right"><div class="amt" style="color:var(--blue)">₹35,620</div><div class="ds">4 lots</div></div></div>
+      <div class="note-box nb-green"><strong style="color:var(--green)">ATLAS recommends Tier 2.</strong> Start with ₹17,810. Risk = ₹2,672/lot. In options, max loss is only the premium paid — your full capital is never at risk.</div>
     </div>
 
     <!-- P&L -->
     <div class="card c-7">
       <div class="card-head">
-        <div><div class="label">Profit &amp; Loss Estimate (per lot)</div><div class="sub">Entry ₹120 · lot 75</div></div>
+        <div><div class="label">Profit &amp; Loss Estimate (per lot)</div><div class="sub">Entry ₹137 · lot 65</div></div>
         <div class="ic ic-green">💰</div>
       </div>
       <div class="pnl2">
-        <div class="pbox win"><div class="label" style="color:var(--t3)">If Target 2 Hit (₹210)</div><div class="amt">+₹6,750</div><div class="sub">(210−120) × 75</div></div>
-        <div class="pbox lose"><div class="label" style="color:var(--t3)">If Stop Loss Hit (₹78)</div><div class="amt">−₹3,150</div><div class="sub">(120−78) × 75</div></div>
+        <div class="pbox win"><div class="label" style="color:var(--t3)">If Target 2 Hit (₹235)</div><div class="amt">+₹6,370</div><div class="sub">(235−137) × 65</div></div>
+        <div class="pbox lose"><div class="label" style="color:var(--t3)">If Stop Loss Hit (₹95)</div><div class="amt">−₹2,730</div><div class="sub">(137−95) × 65</div></div>
       </div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:13px;">
-        <div class="pill" style="text-align:center;"><div class="k">If T1 hit</div><div class="v green" style="font-size:17px;">+₹1,500</div><div class="ds" style="color:var(--t3);font-size:9px;">50% booked</div></div>
-        <div class="pill" style="text-align:center;"><div class="k">Theta / day</div><div class="v red" style="font-size:17px;">−₹1,875</div><div class="ds" style="color:var(--t3);font-size:9px;">per lot decay</div></div>
-        <div class="pill" style="text-align:center;"><div class="k">Break-even</div><div class="v yellow" style="font-size:17px;">₹120</div><div class="ds" style="color:var(--t3);font-size:9px;">= entry</div></div>
+        <div class="pill" style="text-align:center;"><div class="k">If T1 hit</div><div class="v green" style="font-size:17px;">+₹1,400</div><div class="ds" style="color:var(--t3);font-size:9px;">50% booked</div></div>
+        <div class="pill" style="text-align:center;"><div class="k">Theta / day</div><div class="v red" style="font-size:17px;">−₹1,625</div><div class="ds" style="color:var(--t3);font-size:9px;">per lot decay</div></div>
+        <div class="pill" style="text-align:center;"><div class="k">Break-even</div><div class="v yellow" style="font-size:17px;">₹137</div><div class="ds" style="color:var(--t3);font-size:9px;">= entry</div></div>
       </div>
       <div style="display:flex;justify-content:space-between;background:rgba(22,240,163,0.05);border:1px solid rgba(22,240,163,0.15);border-radius:11px;padding:13px 17px;margin-top:13px;">
-        <div><div class="k" style="font-size:10px;color:var(--t3)">2 LOTS · T2 Profit</div><div class="mono" style="font-size:20px;font-weight:800;color:var(--green)">+₹13,500</div></div>
-        <div style="text-align:right;"><div class="k" style="font-size:10px;color:var(--t3)">2 LOTS · SL Loss</div><div class="mono" style="font-size:20px;font-weight:800;color:var(--red)">−₹6,300</div></div>
+        <div><div class="k" style="font-size:10px;color:var(--t3)">2 LOTS · T2 Profit</div><div class="mono" style="font-size:20px;font-weight:800;color:var(--green)">+₹12,740</div></div>
+        <div style="text-align:right;"><div class="k" style="font-size:10px;color:var(--t3)">2 LOTS · SL Loss</div><div class="mono" style="font-size:20px;font-weight:800;color:var(--red)">−₹5,460</div></div>
       </div>
     </div>
 
@@ -572,10 +572,10 @@
       <div class="label" style="margin-bottom:16px;">Execution Timeline</div>
       <div class="tl">
         <div class="tli"><div class="tld">👁</div><div><div class="tlt">9:15 AM · WATCH</div><div class="tla">Monitor the open. Confirm gap-down direction.</div></div></div>
-        <div class="tli"><div class="tld" style="border-color:rgba(255,59,92,0.4)">💰</div><div><div class="tlt">9:30–9:45 · BUY</div><div class="tla">If NIFTY holds below 23,450, buy 23400 PE.</div><div class="tlp" style="color:var(--red)">Entry ₹115–125</div></div></div>
-        <div class="tli"><div class="tld" style="border-color:rgba(255,147,51,0.4)">🛑</div><div><div class="tlt">ANYTIME · STOP</div><div class="tla">If PE hits ₹78, exit immediately.</div><div class="tlp" style="color:var(--orange)">SL ₹78</div></div></div>
-        <div class="tli"><div class="tld" style="border-color:rgba(22,240,163,0.4)">✅</div><div><div class="tlt">TARGET 1</div><div class="tla">At ₹160, sell half — rest becomes free.</div><div class="tlp" style="color:var(--green)">₹160 → +₹1,500</div></div></div>
-        <div class="tli"><div class="tld" style="border-color:rgba(38,255,155,0.4)">🎯</div><div><div class="tlt">TARGET 2</div><div class="tla">At ₹210, sell everything.</div><div class="tlp" style="color:#26ff9b">₹210 → +₹6,750</div></div></div>
+        <div class="tli"><div class="tld" style="border-color:rgba(255,59,92,0.4)">💰</div><div><div class="tlt">9:30–9:45 · BUY</div><div class="tla">If NIFTY holds below 23,450, buy 23400 PE.</div><div class="tlp" style="color:var(--red)">Entry ₹132–142</div></div></div>
+        <div class="tli"><div class="tld" style="border-color:rgba(255,147,51,0.4)">🛑</div><div><div class="tlt">ANYTIME · STOP</div><div class="tla">If PE hits ₹95, exit immediately.</div><div class="tlp" style="color:var(--orange)">SL ₹95</div></div></div>
+        <div class="tli"><div class="tld" style="border-color:rgba(22,240,163,0.4)">✅</div><div><div class="tlt">TARGET 1</div><div class="tla">At ₹180, sell half — rest becomes free.</div><div class="tlp" style="color:var(--green)">₹180 → +₹1,400</div></div></div>
+        <div class="tli"><div class="tld" style="border-color:rgba(38,255,155,0.4)">🎯</div><div><div class="tlt">TARGET 2</div><div class="tla">At ₹235, sell everything.</div><div class="tlp" style="color:#26ff9b">₹235 → +₹6,370</div></div></div>
         <div class="tli"><div class="tld" style="border-color:rgba(255,147,51,0.4)">⏰</div><div><div class="tlt">1:00 PM · FORCE EXIT</div><div class="tla">If not in profit, exit. Theta accelerates.</div></div></div>
       </div>
     </div>
@@ -644,8 +644,8 @@
   // ── Payoff ──
   (function(){
     const ctx = document.getElementById('cPayoff'); if(!ctx) return;
-    const strike=23400, prem=120, lot=75, labels=[], pnl=[];
-    for(let s=23000;s<=23720;s+=40){labels.push(s.toLocaleString('en-IN'));pnl.push((Math.max(strike-s,0)-prem)*lot);}
+    const strike=23400, prem=137, lot=65, labels=[], pnl=[];
+    for(let s=22900;s<=23620;s+=40){labels.push(s.toLocaleString('en-IN'));pnl.push((Math.max(strike-s,0)-prem)*lot);}
     new Chart(ctx,{type:'line',
       data:{labels,datasets:[{data:pnl,borderColor:'#16f0a3',borderWidth:3,tension:0.05,pointRadius:0,
         fill:true,backgroundColor:c=>{const i=c.chart.ctx.createLinearGradient(0,0,0,250);i.addColorStop(0,'rgba(22,240,163,0.25)');i.addColorStop(1,'rgba(255,59,92,0.2)');return i;},
@@ -662,7 +662,7 @@
     const g = ctx.getContext('2d').createLinearGradient(0,0,0,210);
     g.addColorStop(0,'rgba(255,59,92,0.4)'); g.addColorStop(1,'rgba(255,59,92,0.02)');
     new Chart(ctx,{type:'line',
-      data:{labels:['Now · 22 May','Mon · 25 May','Tue · 26 Exp'],datasets:[{data:[120,70,0],borderColor:'#ff3b5c',backgroundColor:g,fill:true,tension:0.4,borderWidth:3,
+      data:{labels:['Now · 22 May','Mon · 25 May','Tue · 26 Exp'],datasets:[{data:[137,80,0],borderColor:'#ff3b5c',backgroundColor:g,fill:true,tension:0.4,borderWidth:3,
         pointRadius:5,pointBackgroundColor:'#ff3b5c',pointBorderColor:'#05070d',pointBorderWidth:2}]},
       options:{responsive:true,maintainAspectRatio:false,
         plugins:{tooltip:{callbacks:{label:c=>'Premium ≈ ₹'+c.parsed.y}}},
