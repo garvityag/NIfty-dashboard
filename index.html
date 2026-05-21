@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATLAS — NIFTY50 Trading Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  :root {
+    --bg-primary: #080c14;
+    --bg-card: #0d1320;
+    --bg-card2: #111827;
+    --border: rgba(0,255,170,0.12);
+    --neon-green: #00ffaa;
+    --neon-blue: #00b4ff;
+    --neon-red: #ff4060;
+    --neon-yellow: #ffd700;
+    --neon-orange: #ff8c00;
+    --text-primary: #e8f0fe;
+    --text-secondary: #8899bb;
+    --text-muted: #445566;
+    --glow-green: 0 0 20px rgba(0,255,170,0.3);
+    --glow-blue: 0 0 20px rgba(0,180,255,0.3);
+    --glow-red: 0 0 20px rgba(255,64,96,0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(0,255,170,0.03) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(0,180,255,0.03) 0%, transparent 50%);
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #0d1320 0%, #111827 100%);
+    border-bottom: 1px solid rgba(0,255,170,0.2);
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(20px);
+  }
+
+  .header-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--neon-green), var(--neon-blue));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 800;
+    color: #000;
+    box-shadow: var(--glow-green);
+  }
+
+  .logo-text {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .header-meta {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .meta-chip {
+    background: rgba(0,255,170,0.08);
+    border: 1px solid rgba(0,255,170,0.2);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--neon-green);
+    letter-spacing: 1px;
+  }
+
+  .live-dot {
+    width: 8px; height: 8px;
+    background: var(--neon-green);
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,255,170,0.4); }
+    50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(0,255,170,0); }
+  }
+
+  /* MAIN GRID */
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 28px 24px;
+    display: grid;
+    gap: 20px;
+  }
+
+  /* SIGNAL BANNER */
+  .signal-banner {
+    background: linear-gradient(135deg, rgba(0,255,170,0.1) 0%, rgba(0,180,255,0.05) 100%);
+    border: 1.5px solid var(--neon-green);
+    border-radius: 16px;
+    padding: 20px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--glow-green), inset 0 0 40px rgba(0,255,170,0.03);
+    animation: bannerPulse 3s ease-in-out infinite;
+  }
+
+  @keyframes bannerPulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(0,255,170,0.3), inset 0 0 40px rgba(0,255,170,0.03); }
+    50% { box-shadow: 0 0 40px rgba(0,255,170,0.5), inset 0 0 40px rgba(0,255,170,0.06); }
+  }
+
+  .signal-main {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .signal-badge {
+    background: var(--neon-green);
+    color: #000;
+    font-weight: 900;
+    font-size: 14px;
+    letter-spacing: 3px;
+    padding: 10px 24px;
+    border-radius: 8px;
+    box-shadow: var(--glow-green);
+  }
+
+  .signal-direction {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--neon-green);
+  }
+
+  .signal-subtitle {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-top: 2px;
+  }
+
+  .signal-confidence {
+    text-align: right;
+  }
+
+  .conf-number {
+    font-size: 42px;
+    font-weight: 900;
+    color: var(--neon-green);
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1;
+  }
+
+  .conf-label {
+    color: var(--text-secondary);
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* CARDS GRID */
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
+    opacity: 0.5;
+  }
+
+  .card:hover {
+    border-color: rgba(0,255,170,0.25);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .card-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+
+  .card-subtitle {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .card-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+  .icon-green { background: rgba(0,255,170,0.1); }
+  .icon-blue { background: rgba(0,180,255,0.1); }
+  .icon-red { background: rgba(255,64,96,0.1); }
+  .icon-yellow { background: rgba(255,215,0,0.1); }
+
+  /* SPOT PRICE CARD */
+  .price-big {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+  }
+
+  .price-change {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,255,170,0.1);
+    color: var(--neon-green);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 8px;
+  }
+
+  .price-change.down {
+    background: rgba(255,64,96,0.1);
+    color: var(--neon-red);
+  }
+
+  /* RANGE BAR */
+  .range-bar-wrap {
+    margin-top: 16px;
+  }
+
+  .range-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .range-bar {
+    height: 6px;
+    background: var(--bg-card2);
+    border-radius: 3px;
+    position: relative;
+    overflow: visible;
+  }
+
+  .range-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--neon-blue), var(--neon-green));
+    width: 62%;
+  }
+
+  .range-pointer {
+    position: absolute;
+    top: -4px;
+    left: 62%;
+    width: 14px;
+    height: 14px;
+    background: var(--neon-green);
+    border-radius: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 0 8px var(--neon-green);
+  }
+
+  /* STAT ITEMS */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .stat-item {
+    background: var(--bg-card2);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .stat-value.green { color: var(--neon-green); }
+  .stat-value.red { color: var(--neon-red); }
+  .stat-value.blue { color: var(--neon-blue); }
+  .stat-value.yellow { color: var(--neon-yellow); }
+
+  /* VIX GAUGE */
+  .vix-gauge {
+    position: relative;
+    text-align: center;
+    padding: 10px 0;
+  }
+
+  .vix-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 48px;
+    font-weight: 900;
+    color: var(--neon-yellow);
+    line-height: 1;
+    text-shadow: 0 0 30px rgba(255,215,0,0.4);
+  }
+
+  .vix-status {
+    display: inline-block;
+    background: rgba(0,255,170,0.15);
+    color: var(--neon-green);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-top: 6px;
+  }
+
+  .vix-status.caution {
+    background: rgba(255,215,0,0.15);
+    color: var(--neon-yellow);
+  }
+
+  /* PROGRESS BAR */
+  .prog-bar-wrap {
+    margin-top: 12px;
+  }
+
+  .prog-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+  }
+
+  .prog-bar {
+    height: 8px;
+    background: var(--bg-card2);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+
+  .prog-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s ease;
+  }
+
+  .prog-green { background: linear-gradient(90deg, #00cc88, var(--neon-green)); }
+  .prog-yellow { background: linear-gradient(90deg, #cc8800, var(--neon-yellow)); }
+  .prog-red { background: linear-gradient(90deg, #cc0033, var(--neon-red)); }
+  .prog-blue { background: linear-gradient(90deg, #0088cc, var(--neon-blue)); }
+
+  /* TRADE CARD */
+  .trade-card {
+    background: var(--bg-card);
+    border: 1.5px solid rgba(0,180,255,0.2);
+    border-radius: 16px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .trade-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+  }
+
+  .option-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,180,255,0.1);
+    border: 1px solid rgba(0,180,255,0.3);
+    padding: 8px 16px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+  }
+
+  .option-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--neon-blue);
+  }
+
+  .option-type {
+    background: var(--neon-blue);
+    color: #000;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 5px;
+    letter-spacing: 1px;
+  }
+
+  .ltp-display {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .ltp-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .ltp-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--neon-blue);
+    text-shadow: 0 0 20px rgba(0,180,255,0.4);
+  }
+
+  /* PRICE LEVELS */
+  .levels-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .level-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--bg-card2);
+    border-radius: 10px;
+    border-left: 3px solid transparent;
+  }
+
+  .level-row.entry { border-color: var(--neon-blue); }
+  .level-row.target1 { border-color: var(--neon-green); }
+  .level-row.target2 { border-color: #00ff66; }
+  .level-row.sl { border-color: var(--neon-red); }
+
+  .level-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    min-width: 70px;
+  }
+
+  .level-tag.entry { color: var(--neon-blue); }
+  .level-tag.t1 { color: var(--neon-green); }
+  .level-tag.t2 { color: #00ff66; }
+  .level-tag.sl { color: var(--neon-red); }
+
+  .level-price {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    flex: 1;
+  }
+
+  .level-note {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .rr-badge {
+    background: rgba(0,255,170,0.1);
+    border: 1px solid rgba(0,255,170,0.2);
+    border-radius: 8px;
+    padding: 8px 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .rr-label { font-size: 11px; color: var(--text-muted); }
+  .rr-value { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: var(--neon-green); }
+
+  /* FUND TIERS */
+  .tier-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--bg-card2);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    transition: all 0.3s;
+    cursor: default;
+    border: 1px solid transparent;
+  }
+
+  .tier-row.recommended {
+    border-color: rgba(0,255,170,0.3);
+    background: rgba(0,255,170,0.05);
+  }
+
+  .tier-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-1 { background: var(--text-muted); }
+  .dot-2 { background: var(--neon-green); box-shadow: 0 0 8px var(--neon-green); }
+  .dot-3 { background: var(--neon-blue); box-shadow: 0 0 8px var(--neon-blue); }
+
+  .tier-info { flex: 1; }
+  .tier-name { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+  .tier-desc { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+  .tier-amount {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .rec-tag {
+    background: var(--neon-green);
+    color: #000;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  /* TECH INDICATORS */
+  .indicator-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .indicator-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    background: var(--bg-card2);
+    border-radius: 8px;
+  }
+
+  .ind-name { font-size: 12px; color: var(--text-secondary); font-weight: 600; }
+  .ind-value { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; }
+  .ind-signal {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+  }
+
+  .sig-buy { background: rgba(0,255,170,0.15); color: var(--neon-green); }
+  .sig-sell { background: rgba(255,64,96,0.15); color: var(--neon-red); }
+  .sig-neutral { background: rgba(136,153,187,0.15); color: var(--text-secondary); }
+
+  /* PNL CARD */
+  .pnl-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .pnl-box {
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .pnl-box.profit {
+    background: rgba(0,255,170,0.08);
+    border: 1px solid rgba(0,255,170,0.2);
+  }
+
+  .pnl-box.loss {
+    background: rgba(255,64,96,0.08);
+    border: 1px solid rgba(255,64,96,0.2);
+  }
+
+  .pnl-label { font-size: 10px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .pnl-amount {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 26px;
+    font-weight: 800;
+  }
+
+  .pnl-profit .pnl-amount { color: var(--neon-green); }
+  .pnl-loss .pnl-amount { color: var(--neon-red); }
+  .pnl-box.profit .pnl-amount { color: var(--neon-green); }
+  .pnl-box.loss .pnl-amount { color: var(--neon-red); }
+  .pnl-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+  /* TIMELINE */
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .tl-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    position: relative;
+    padding-bottom: 16px;
+  }
+
+  .tl-item:last-child { padding-bottom: 0; }
+
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: 19px;
+    top: 28px;
+    bottom: 0;
+    width: 2px;
+    background: rgba(0,255,170,0.1);
+  }
+
+  .tl-item:last-child::before { display: none; }
+
+  .tl-dot {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    z-index: 1;
+  }
+
+  .tl-dot.watch { background: rgba(136,153,187,0.2); }
+  .tl-dot.buy { background: rgba(0,180,255,0.2); border: 2px solid rgba(0,180,255,0.4); }
+  .tl-dot.sl { background: rgba(255,64,96,0.2); border: 2px solid rgba(255,64,96,0.4); }
+  .tl-dot.t1 { background: rgba(0,255,170,0.2); border: 2px solid rgba(0,255,170,0.4); }
+  .tl-dot.t2 { background: rgba(0,255,102,0.2); border: 2px solid rgba(0,255,102,0.4); }
+  .tl-dot.exit { background: rgba(255,140,0,0.2); border: 2px solid rgba(255,140,0,0.4); }
+
+  .tl-content { padding-top: 8px; }
+  .tl-time { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: var(--text-primary); }
+  .tl-action { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .tl-price { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; margin-top: 2px; }
+
+  /* MARKET CONDITIONS */
+  .cond-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--bg-card2);
+    border-radius: 10px;
+    margin-bottom: 8px;
+  }
+
+  .cond-label { font-size: 12px; color: var(--text-secondary); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .cond-emoji { font-size: 16px; }
+
+  /* RISK WARNING */
+  .risk-box {
+    background: rgba(255,64,96,0.06);
+    border: 1px solid rgba(255,64,96,0.25);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .risk-icon { font-size: 22px; flex-shrink: 0; }
+  .risk-text { font-size: 13px; color: #ff8899; line-height: 1.5; }
+
+  /* ATLAS FINAL CALL */
+  .final-call {
+    background: linear-gradient(135deg, rgba(0,255,170,0.08) 0%, rgba(0,180,255,0.04) 100%);
+    border: 1.5px solid rgba(0,255,170,0.25);
+    border-radius: 16px;
+    padding: 28px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .final-call::after {
+    content: 'ATLAS';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 120px;
+    font-weight: 900;
+    color: rgba(0,255,170,0.03);
+    letter-spacing: 20px;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .final-hinglish {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+
+  .final-signal-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--neon-green), #00cc88);
+    color: #000;
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    padding: 14px 48px;
+    border-radius: 12px;
+    box-shadow: 0 0 30px rgba(0,255,170,0.4);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* SECTION TITLES */
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* DISCLAIMER */
+  .disclaimer {
+    background: rgba(255,215,0,0.04);
+    border: 1px solid rgba(255,215,0,0.15);
+    border-radius: 12px;
+    padding: 14px 20px;
+    font-size: 11px;
+    color: rgba(255,215,0,0.6);
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  /* DATA SOURCE NOTE */
+  .data-note {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .est-tag {
+    background: rgba(255,215,0,0.1);
+    color: var(--neon-yellow);
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 3px;
+    letter-spacing: 1px;
+  }
+
+  /* SELL RULES */
+  .sell-rule {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 10px 14px;
+    background: var(--bg-card2);
+    border-radius: 10px;
+    margin-bottom: 8px;
+  }
+
+  .sell-arrow {
+    color: var(--neon-green);
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .sell-text { font-size: 13px; color: var(--text-secondary); line-height: 1.4; }
+  .sell-text strong { color: var(--text-primary); }
+
+  /* RESPONSIVE */
+  @media (max-width: 1024px) {
+    .grid-3 { grid-template-columns: repeat(2, 1fr); }
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 768px) {
+    .header { padding: 12px 16px; }
+    .container { padding: 16px; }
+    .grid-3, .grid-2, .grid-4 { grid-template-columns: 1fr; }
+    .signal-banner { flex-direction: column; gap: 16px; text-align: center; }
+    .price-big { font-size: 30px; }
+    .vix-number { font-size: 36px; }
+  }
+
+  /* ANIMATED SKELETON on load */
+  .card { animation: fadeInUp 0.4s ease both; }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .card:nth-child(1) { animation-delay: 0.05s; }
+  .card:nth-child(2) { animation-delay: 0.10s; }
+  .card:nth-child(3) { animation-delay: 0.15s; }
+  .card:nth-child(4) { animation-delay: 0.20s; }
+  .card:nth-child(5) { animation-delay: 0.25s; }
+  .card:nth-child(6) { animation-delay: 0.30s; }
+
+  .scrollbar-thin::-webkit-scrollbar { width: 4px; }
+  .scrollbar-thin::-webkit-scrollbar-track { background: var(--bg-card); }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(0,255,170,0.2); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-logo">
+    <div class="logo-icon">A</div>
+    <div>
+      <div class="logo-text">ATLAS</div>
+      <div style="font-size:10px;color:var(--text-muted);letter-spacing:2px;margin-top:-2px;">AUTOMATED TRADING INTELLIGENCE</div>
+    </div>
+  </div>
+  <div class="header-meta">
+    <div class="meta-chip"><span class="live-dot"></span>LIVE</div>
+    <div class="meta-chip">NIFTY 50</div>
+    <div class="meta-chip">22 MAY 2026 • FRI</div>
+    <div class="meta-chip">NSE INDIA</div>
+  </div>
+</div>
+
+<!-- MAIN CONTAINER -->
+<div class="container">
+
+  <!-- SIGNAL BANNER -->
+  <div class="signal-banner">
+    <div class="signal-main">
+      <div class="signal-badge">BUY</div>
+      <div>
+        <div class="signal-direction">⬆ UPTREND — BUY CE TRADE</div>
+        <div class="signal-subtitle">GIFT Nifty +1.43% pre-market · VIX declining · MACD Buy signal</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:32px;align-items:center;">
+      <div style="text-align:center;">
+        <div style="font-size:10px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;">CONFIDENCE</div>
+        <div class="conf-number">6.5<span style="font-size:20px;color:var(--text-secondary)">/10</span></div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:10px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;">VIX STATUS</div>
+        <div style="font-size:22px;font-weight:800;color:var(--neon-yellow);">SAFE</div>
+        <div style="font-size:11px;color:var(--text-muted);">17.53 — Below 20</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:10px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;">EXPECTED RANGE</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--text-primary);">23,700 → 24,050</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 1: Spot Price + VIX + GIFT Nifty -->
+  <div class="grid-3">
+
+    <!-- NIFTY SPOT -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">NIFTY 50 Spot Price</div>
+          <div class="card-subtitle">NSE India — Cash Market</div>
+        </div>
+        <div class="card-icon icon-green">📈</div>
+      </div>
+      <div class="price-big">₹23,687</div>
+      <div class="price-change">▲ +28.20 pts &nbsp;(+0.12%)</div>
+      <div class="data-note"><span class="est-tag">MAY 21 CLOSE</span> Live open expected ~23,850 (GIFT Nifty cue)</div>
+      <div class="range-bar-wrap">
+        <div class="range-labels">
+          <span>Day Low: 23,752</span>
+          <span>Day High: 23,860</span>
+        </div>
+        <div class="range-bar">
+          <div class="range-fill"></div>
+          <div class="range-pointer"></div>
+        </div>
+      </div>
+      <div class="stat-grid" style="margin-top:16px;">
+        <div class="stat-item">
+          <div class="stat-label">200 DMA</div>
+          <div class="stat-value green">23,815</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">50 DMA</div>
+          <div class="stat-value blue">24,142</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">5 DMA</div>
+          <div class="stat-value red">24,188</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Weekly Low</div>
+          <div class="stat-value yellow">23,111</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INDIA VIX -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">India VIX — Fear Index</div>
+          <div class="card-subtitle">Volatility Indicator</div>
+        </div>
+        <div class="card-icon icon-yellow">⚡</div>
+      </div>
+      <div class="vix-gauge">
+        <div class="vix-number">17.53</div>
+        <div><span class="vix-status">✓ SAFE ZONE</span></div>
+        <div class="price-change" style="margin:8px auto;display:inline-flex;">▼ -4.91% Declining</div>
+      </div>
+      <div style="margin-top:16px;">
+        <div class="prog-bar-label"><span>0</span><span>Safe &lt;15</span><span>Caution 15-20</span><span>Danger &gt;20</span></div>
+        <div style="position:relative;height:12px;background:linear-gradient(90deg,#00cc88,#ffd700 60%,#ff4060);border-radius:6px;margin-top:4px;">
+          <div style="position:absolute;top:-3px;left:calc(17.53/30*100%);width:18px;height:18px;background:#ffd700;border-radius:50%;transform:translateX(-50%);box-shadow:0 0 10px #ffd700;border:2px solid #000;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-top:6px;">
+          <span>0</span><span>10</span><span>20</span><span>30</span>
+        </div>
+      </div>
+      <div style="background:rgba(255,215,0,0.06);border-radius:10px;padding:12px 14px;margin-top:14px;font-size:12px;color:#aaa;line-height:1.5;">
+        VIX at 17.53 means there is mild nervousness in the market, but it is below 20 — <strong style="color:#ffd700;">TRADING IS SAFE.</strong> The lower the VIX, the better conditions for trading.
+      </div>
+    </div>
+
+    <!-- GIFT NIFTY + GLOBAL -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">GIFT Nifty + Global Cues</div>
+          <div class="card-subtitle">Pre-market Signal</div>
+        </div>
+        <div class="card-icon icon-blue">🌐</div>
+      </div>
+      <div style="background:rgba(0,180,255,0.08);border:1px solid rgba(0,180,255,0.2);border-radius:12px;padding:14px;margin-bottom:14px;">
+        <div style="font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">GIFT Nifty (Pre-Market)</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:800;color:var(--neon-blue);">23,858</div>
+          <div style="text-align:right;">
+            <div style="color:var(--neon-green);font-weight:700;font-size:14px;">+336 pts</div>
+            <div style="color:var(--neon-green);font-size:12px;">+1.43%</div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Gap-up opening ~170 pts expected</div>
+      </div>
+      <div class="indicator-row" style="margin-bottom:8px;">
+        <div class="cond-label"><span class="cond-emoji">🇺🇸</span> US Markets (Dow/S&P)</div>
+        <span style="color:var(--neon-green);font-weight:700;font-size:12px;">GREEN ↑</span>
+      </div>
+      <div class="indicator-row" style="margin-bottom:8px;">
+        <div class="cond-label"><span class="cond-emoji">🇯🇵</span> Nikkei / Asian</div>
+        <span style="color:var(--neon-green);font-weight:700;font-size:12px;">MIXED ↔</span>
+      </div>
+      <div class="indicator-row" style="margin-bottom:8px;">
+        <div class="cond-label"><span class="cond-emoji">🛢️</span> Crude Oil</div>
+        <span style="color:var(--neon-red);font-weight:700;font-size:12px;">$109 ⚠ HIGH</span>
+      </div>
+      <div class="indicator-row">
+        <div class="cond-label"><span class="cond-emoji">💱</span> USD/INR</div>
+        <span style="color:var(--neon-red);font-weight:700;font-size:12px;">₹96.14 WEAK</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 2: Best Option + Fund Tiers -->
+  <div class="grid-2">
+
+    <!-- OPTION SELECTION -->
+    <div class="trade-card">
+      <div class="card-title" style="margin-bottom:16px;">ATLAS BEST OPTION PICK</div>
+      <div class="option-badge">
+        <div class="option-name">NIFTY 24000</div>
+        <div class="option-type">CE</div>
+        <div style="font-size:11px;color:var(--text-secondary);">MAY 28 EXPIRY</div>
+      </div>
+      <div class="ltp-display">
+        <div>
+          <div class="ltp-label">Estimated LTP</div>
+          <div class="ltp-value">₹150</div>
+        </div>
+        <div style="margin-left:24px;">
+          <div class="ltp-label">Lot Size</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:800;color:var(--text-primary);">75</div>
+        </div>
+        <div style="margin-left:24px;">
+          <div class="ltp-label">Expiry</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--text-secondary);">7 Days</div>
+        </div>
+      </div>
+      <div class="data-note" style="margin-bottom:12px;"><span class="est-tag">ESTIMATED</span> Verify the real LTP on your broker app at 9:30 AM</div>
+      <div style="background:rgba(0,180,255,0.06);border:1px solid rgba(0,180,255,0.15);border-radius:10px;padding:12px 14px;font-size:12px;color:#8899bb;line-height:1.5;">
+        <strong style="color:var(--neon-blue);">Why this strike?</strong> — GIFT Nifty suggests an open at ~23,850. The 24,000 CE is ~150 pts OTM — affordable, good liquidity, and a meaningful move is expected if Nifty reaches the 23,938–24,116 resistance zone.
+      </div>
+      <div class="stat-grid" style="margin-top:14px;">
+        <div class="stat-item">
+          <div class="stat-label">IV (Estimated)</div>
+          <div class="stat-value yellow">~18-20%</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">OTM Distance</div>
+          <div class="stat-value blue">~150 pts</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Theta Decay</div>
+          <div class="stat-value red">~₹8/day</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Max Pain Zone</div>
+          <div class="stat-value">~23,900</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FUND TIERS -->
+    <div class="card">
+      <div class="card-title" style="margin-bottom:4px;">HOW MUCH CAPITAL DO YOU NEED?</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:20px;">Based on LTP ₹150 × Lot 75 = ₹11,250 per lot</div>
+
+      <div class="tier-row">
+        <div class="tier-dot dot-1"></div>
+        <div class="tier-info">
+          <div class="tier-name">TIER 1 — STARTER</div>
+          <div class="tier-desc">1 lot minimum · High risk</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="tier-amount" style="color:var(--text-secondary);">₹11,250</div>
+          <div style="font-size:10px;color:var(--text-muted);">1 lot</div>
+        </div>
+      </div>
+
+      <div class="tier-row recommended">
+        <div class="tier-dot dot-2"></div>
+        <div class="tier-info">
+          <div class="tier-name" style="color:var(--neon-green);">TIER 2 — STANDARD ⭐</div>
+          <div class="tier-desc">2 lots · Recommended buffer</div>
+        </div>
+        <div style="text-align:right;display:flex;align-items:center;gap:10px;">
+          <div>
+            <div class="tier-amount" style="color:var(--neon-green);">₹22,500</div>
+            <div style="font-size:10px;color:var(--text-muted);">2 lots</div>
+          </div>
+          <span class="rec-tag">BEST</span>
+        </div>
+      </div>
+
+      <div class="tier-row">
+        <div class="tier-dot dot-3"></div>
+        <div class="tier-info">
+          <div class="tier-name">TIER 3 — STRONG</div>
+          <div class="tier-desc">4 lots · Comfortable position</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="tier-amount" style="color:var(--neon-blue);">₹45,000</div>
+          <div style="font-size:10px;color:var(--text-muted);">4 lots</div>
+        </div>
+      </div>
+
+      <div style="background:rgba(0,255,170,0.05);border:1px solid rgba(0,255,170,0.15);border-radius:10px;padding:14px;margin-top:6px;font-size:12px;color:#aaa;line-height:1.6;">
+        <strong style="color:var(--neon-green);">ATLAS RECOMMENDS: TIER 2</strong><br>
+        Start with ₹22,500. Risk = ₹3,750 per lot. In options, the maximum loss is only the premium paid — your full capital is never at risk.
+      </div>
+
+      <div style="margin-top:16px;">
+        <div style="font-size:10px;color:var(--text-muted);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase;">Risk Formula</div>
+        <div class="prog-bar-label"><span>Risk per trade (30%)</span><span>₹3,375 (1 lot)</span></div>
+        <div class="prog-bar"><div class="prog-fill prog-yellow" style="width:30%"></div></div>
+        <div class="prog-bar-label"><span>Max loss ever</span><span>₹11,250 (full premium)</span></div>
+        <div class="prog-bar"><div class="prog-fill prog-red" style="width:100%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 3: Trade Plan + Exit Plan -->
+  <div class="grid-2">
+
+    <!-- TRADE ENTRY PLAN -->
+    <div class="card">
+      <div class="card-title" style="margin-bottom:16px;">TRADE ENTRY PLAN — WHEN TO BUY</div>
+
+      <div class="levels-wrap">
+        <div class="level-row entry">
+          <div class="level-tag entry">BUY AT</div>
+          <div class="level-price" style="color:var(--neon-blue);">₹148 – ₹155</div>
+          <div class="level-note">Entry zone</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;">
+        <div class="stat-item">
+          <div class="stat-label">BUY TIME</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--neon-blue);">9:30 – 9:45 AM</div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">Post opening volatility</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">LOT SIZE</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--text-primary);">75 units</div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">1 lot = ₹11,250</div>
+        </div>
+      </div>
+
+      <div style="background:rgba(0,180,255,0.06);border-radius:10px;padding:14px;margin-top:14px;">
+        <div style="font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">BUY ONLY WHEN:</div>
+        <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;">
+          <div style="color:var(--neon-blue);font-weight:700;flex-shrink:0;">✓</div>
+          <div style="font-size:13px;color:var(--text-secondary);">NIFTY gap-up opens above <strong style="color:var(--text-primary);">23,820</strong> and holds for 5 minutes</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;">
+          <div style="color:var(--neon-blue);font-weight:700;flex-shrink:0;">✓</div>
+          <div style="font-size:13px;color:var(--text-secondary);">No sudden red candle in first 5 minutes</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <div style="color:var(--neon-blue);font-weight:700;flex-shrink:0;">✓</div>
+          <div style="font-size:13px;color:var(--text-secondary);">Option LTP is between ₹143 – ₹160 (don't buy if too expensive)</div>
+        </div>
+      </div>
+
+      <div style="background:rgba(255,64,96,0.06);border-radius:10px;padding:14px;margin-top:10px;">
+        <div style="font-size:10px;color:var(--neon-red);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">DO NOT BUY IF:</div>
+        <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:6px;">
+          <div style="color:var(--neon-red);font-weight:700;flex-shrink:0;">✗</div>
+          <div style="font-size:13px;color:#aa6677;">NIFTY opens below 23,700 (gap-down reversal)</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <div style="color:var(--neon-red);font-weight:700;flex-shrink:0;">✗</div>
+          <div style="font-size:13px;color:#aa6677;">VIX suddenly jumps above 20 at open</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXIT PLAN -->
+    <div class="card">
+      <div class="card-title" style="margin-bottom:16px;">EXIT PLAN — HOW TO EXIT</div>
+
+      <div class="levels-wrap">
+        <div class="level-row target1">
+          <div class="level-tag t1">TARGET 1</div>
+          <div class="level-price" style="color:var(--neon-green);">₹200</div>
+          <div class="level-note">Book 50% here → ₹3,750 locked</div>
+        </div>
+        <div class="level-row target2">
+          <div class="level-tag t2">TARGET 2</div>
+          <div class="level-price" style="color:#00ff66;">₹260</div>
+          <div class="level-note">Exit everything → Full profit</div>
+        </div>
+        <div class="level-row sl">
+          <div class="level-tag sl">STOP LOSS</div>
+          <div class="level-price" style="color:var(--neon-red);">₹100</div>
+          <div class="level-note">Exit immediately — no delay</div>
+        </div>
+      </div>
+
+      <div class="rr-badge" style="margin-top:16px;">
+        <div class="rr-label">Risk:Reward</div>
+        <div class="rr-value">1 : 2.3</div>
+        <div style="font-size:11px;color:var(--text-secondary);">For every ₹1 risked → ₹2.3 potential gain</div>
+      </div>
+
+      <div style="margin-top:16px;">
+        <div style="font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">SELL RULES — FOLLOW EXACTLY:</div>
+        <div class="sell-rule">
+          <span class="sell-arrow">→</span>
+          <div class="sell-text">Price hits <strong>₹200 (T1)</strong>: Sell <strong>half your position.</strong> Hold the rest — it becomes a free trade.</div>
+        </div>
+        <div class="sell-rule">
+          <span class="sell-arrow">→</span>
+          <div class="sell-text">Price hits <strong>₹260 (T2)</strong>: Sell <strong>everything NOW.</strong> Don't wait for more.</div>
+        </div>
+        <div class="sell-rule">
+          <span class="sell-arrow" style="color:var(--neon-red);">→</span>
+          <div class="sell-text">Price hits <strong>₹100 (SL)</strong>: Sell <strong>everything IMMEDIATELY.</strong> No hope, no wait.</div>
+        </div>
+        <div class="sell-rule">
+          <span class="sell-arrow" style="color:var(--neon-orange);">→</span>
+          <div class="sell-text">Time crosses <strong>2:00 PM</strong>: Exit if not in profit. Theta decay begins to accelerate.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 4: P&L + Technical Indicators -->
+  <div class="grid-2">
+
+    <!-- P&L ESTIMATE -->
+    <div class="card">
+      <div class="card-title" style="margin-bottom:16px;">PROFIT & LOSS ESTIMATE (per lot)</div>
+      <div class="pnl-grid">
+        <div class="pnl-box profit">
+          <div class="pnl-label">If T2 Hit (₹260)</div>
+          <div class="pnl-amount">+₹8,250</div>
+          <div class="pnl-sub">per lot · (260-150) × 75</div>
+        </div>
+        <div class="pnl-box loss">
+          <div class="pnl-label">If SL Hit (₹100)</div>
+          <div class="pnl-amount">-₹3,750</div>
+          <div class="pnl-sub">per lot · (150-100) × 75</div>
+        </div>
+      </div>
+      <div style="background:var(--bg-card2);border-radius:10px;padding:14px;margin-top:14px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center;">
+          <div>
+            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">If T1 Hit</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--neon-green);margin-top:4px;">+₹3,750</div>
+            <div style="font-size:10px;color:var(--text-muted);">(50% booked)</div>
+          </div>
+          <div style="border-left:1px solid var(--border);border-right:1px solid var(--border);">
+            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">Theta/Day</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--neon-red);margin-top:4px;">-₹600</div>
+            <div style="font-size:10px;color:var(--text-muted);">per lot decay</div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">Break-Even</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--neon-yellow);margin-top:4px;">₹150</div>
+            <div style="font-size:10px;color:var(--text-muted);">= entry price</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:14px;">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">2 LOTS SCENARIO (Tier 2):</div>
+        <div style="display:flex;justify-content:space-between;background:rgba(0,255,170,0.05);border:1px solid rgba(0,255,170,0.15);border-radius:8px;padding:12px 16px;">
+          <div>
+            <div style="font-size:10px;color:var(--text-muted);">T2 Profit</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:800;color:var(--neon-green);">+₹16,500</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:10px;color:var(--text-muted);">SL Loss</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:800;color:var(--neon-red);">-₹7,500</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TECHNICAL INDICATORS -->
+    <div class="card">
+      <div class="card-title" style="margin-bottom:16px;">TECHNICAL INDICATORS</div>
+      <div class="indicator-grid">
+        <div class="indicator-row">
+          <div class="ind-name">RSI (14)</div>
+          <div class="ind-value" style="color:var(--neon-yellow);">~45</div>
+          <span class="ind-signal sig-neutral">NEUTRAL</span>
+        </div>
+        <div class="indicator-row">
+          <div class="ind-name">MACD</div>
+          <div class="ind-value" style="color:var(--neon-green);">+13.7</div>
+          <span class="ind-signal sig-buy">BUY</span>
+        </div>
+        <div class="indicator-row">
+          <div class="ind-name">EMA 9</div>
+          <div class="ind-value">~23,700</div>
+          <span class="ind-signal sig-neutral">WATCH</span>
+        </div>
+        <div class="indicator-row">
+          <div class="ind-name">EMA 21</div>
+          <div class="ind-value">~23,850</div>
+          <span class="ind-signal sig-neutral">NEAR</span>
+        </div>
+        <div class="indicator-row">
+          <div class="ind-name">EMA 50 (5DMA)</div>
+          <div class="ind-value" style="color:var(--neon-red);">24,188</div>
+          <span class="ind-signal sig-sell">ABOVE</span>
+        </div>
+        <div class="indicator-row">
+          <div class="ind-name">200 DMA</div>
+          <div class="ind-value" style="color:var(--neon-green);">23,815</div>
+          <span class="ind-signal sig-buy">SUPPORT</span>
+        </div>
+        <div class="indicator-row">
+          <div class="ind-name">Support 1</div>
+          <div class="ind-value" style="color:var(--neon-green);">23,475</div>
+          <span class="ind-signal sig-buy">STRONG</span>
+        </div>
+        <div class="indicator-row">
+          <div class="ind-name">Resistance 1</div>
+          <div class="ind-value" style="color:var(--neon-red);">23,938</div>
+          <span class="ind-signal sig-sell">WALL</span>
+        </div>
+      </div>
+      <div style="background:rgba(0,180,255,0.05);border-radius:10px;padding:12px 14px;margin-top:12px;font-size:12px;color:#8899bb;line-height:1.5;">
+        <strong style="color:var(--neon-blue);">Bottom line:</strong> MACD is showing a buy signal. RSI at 45 has not fallen too deep — a recovery is possible. The 200 DMA at 23,815 is a strong support level. If that breaks, skip the trade.
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 5: Market Conditions + FII/DII -->
+  <div class="grid-2">
+
+    <!-- MARKET CONDITIONS -->
+    <div class="card">
+      <div class="card-title" style="margin-bottom:16px;">MARKET CONDITIONS</div>
+
+      <div class="cond-row">
+        <div class="cond-label"><span class="cond-emoji">⚡</span> India VIX</div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--neon-yellow);">17.53</div>
+          <span class="ind-signal sig-buy" style="background:rgba(0,255,170,0.1);color:var(--neon-green);">SAFE</span>
+        </div>
+      </div>
+
+      <div class="cond-row">
+        <div class="cond-label"><span class="cond-emoji">📊</span> PCR (Put/Call Ratio)</div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--neon-yellow);">~0.95</div>
+          <span class="ind-signal sig-neutral">NEUTRAL</span>
+        </div>
+      </div>
+
+      <div class="cond-row">
+        <div class="cond-label"><span class="cond-emoji">🏦</span> FII Activity (May 20)</div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--neon-red);">-₹1,597 Cr</div>
+          <span class="ind-signal sig-sell">SELLING</span>
+        </div>
+      </div>
+
+      <div class="cond-row">
+        <div class="cond-label"><span class="cond-emoji">🏠</span> DII Activity (May 20)</div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--neon-green);">+₹1,968 Cr</div>
+          <span class="ind-signal sig-buy">BUYING</span>
+        </div>
+      </div>
+
+      <div class="cond-row">
+        <div class="cond-label"><span class="cond-emoji">🌍</span> Global Cues</div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="color:var(--neon-yellow);font-weight:700;font-size:12px;">MIXED</span>
+          <span class="ind-signal sig-neutral">CAUTIOUS</span>
+        </div>
+      </div>
+
+      <div class="cond-row">
+        <div class="cond-label"><span class="cond-emoji">📅</span> Today (Friday)</div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="color:var(--neon-blue);font-weight:700;font-size:12px;">POST-EXPIRY DAY</span>
+          <span class="ind-signal" style="background:rgba(0,180,255,0.1);color:var(--neon-blue);">FRESH</span>
+        </div>
+      </div>
+
+      <div style="background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.15);border-radius:10px;padding:12px 14px;margin-top:4px;font-size:12px;color:rgba(255,215,0,0.7);line-height:1.5;">
+        ⚠️ <strong>Key Risks Today:</strong> Crude oil at $109 (inflation concern), Weak Rupee at ₹96.14, FII net selling. DII support is present but foreign institutional sellers are adding downside pressure.
+      </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <div class="card">
+      <div class="card-title" style="margin-bottom:16px;">SIMPLE TIMELINE — STEP BY STEP</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot watch">👁</div>
+          <div class="tl-content">
+            <div class="tl-time">9:15 AM — WATCH</div>
+            <div class="tl-action">Start monitoring the market. Confirm the GIFT Nifty direction.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot buy">💰</div>
+          <div class="tl-content">
+            <div class="tl-time">9:30 – 9:45 AM — BUY WINDOW</div>
+            <div class="tl-action">If NIFTY holds stable above 23,820, buy the option.</div>
+            <div class="tl-price" style="color:var(--neon-blue);">Entry: ₹148 – ₹155</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot sl">🛑</div>
+          <div class="tl-content">
+            <div class="tl-time">Anytime — STOP LOSS</div>
+            <div class="tl-action">If the option falls to ₹100, exit immediately without hesitation.</div>
+            <div class="tl-price" style="color:var(--neon-red);">SL: ₹100 — No delay, no hope</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot t1">✅</div>
+          <div class="tl-content">
+            <div class="tl-time">TARGET 1 — Half Exit</div>
+            <div class="tl-action">At ₹200, sell half. The remaining position becomes a free trade.</div>
+            <div class="tl-price" style="color:var(--neon-green);">₹200 → Sell 50% → +₹3,750 locked</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot t2">🎯</div>
+          <div class="tl-content">
+            <div class="tl-time">TARGET 2 — Full Exit</div>
+            <div class="tl-action">At ₹260, sell everything. Lock in your full profit.</div>
+            <div class="tl-price" style="color:#00ff66;">₹260 → Sell ALL → +₹8,250 profit</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot exit">⏰</div>
+          <div class="tl-content">
+            <div class="tl-time">2:00 PM — FORCE EXIT</div>
+            <div class="tl-action">If not in profit, exit immediately. Theta drain begins to accelerate.</div>
+            <div class="tl-price" style="color:var(--neon-orange);">Time = enemy after 2 PM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RISK WARNING -->
+  <div class="risk-box">
+    <div class="risk-icon">⚠️</div>
+    <div>
+      <div style="font-size:12px;font-weight:700;color:var(--neon-red);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">BIGGEST RISK TODAY</div>
+      <div class="risk-text">
+        Crude oil at <strong style="color:#ffaaaa;">$109/barrel</strong> is the #1 risk today — if sudden negative news breaks (Middle East escalation, crude spike), the market can drop 200–300 pts instantly and your CE will become worthless fast.
+        Second risk: FII selling pressure. When large foreign investors sell, gap-up openings usually close quickly (gap-fill reversal).
+        <strong style="color:#ffaaaa;">Always confirm NIFTY direction at 9:35 AM before placing any buy order.</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- ATLAS FINAL CALL -->
+  <div class="final-call">
+    <div style="font-size:10px;color:var(--text-muted);letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;">ATLAS FINAL CALL</div>
+    <div class="final-hinglish">
+      "GIFT Nifty is up +1.43% pre-market and VIX is in the safe zone —<br>
+      there is a genuine trading opportunity here. However, crude at $109 and FII selling could flip the market quickly.<br>
+      <strong style="color:var(--text-primary);">Wait until 9:35 AM, confirm that NIFTY is holding stable above 23,820, and only then enter the trade.</strong>"
+    </div>
+    <div class="final-signal-btn">⬆ SIGNAL : BUY</div>
+    <div style="margin-top:16px;font-size:11px;color:var(--text-muted);">Valid: 9:30 AM – 9:45 AM window only · Reassess if conditions change</div>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer">
+    ⚠️ <strong>DISCLAIMER:</strong> ATLAS is an AI analysis tool for educational purposes only. Options trading involves significant financial risk and you can lose your entire investment.
+    This is NOT financial advice. All data marked ESTIMATED should be verified on your broker platform before trading.
+    Past analysis does not guarantee future results. Trade only with money you can afford to lose.
+    Always consult a SEBI-registered advisor for financial decisions.
+  </div>
+
+</div>
+
+<script>
+  // Animate progress bars on load
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.querySelectorAll('.prog-fill').forEach(bar => {
+        const w = bar.style.width;
+        bar.style.width = '0%';
+        setTimeout(() => { bar.style.width = w; }, 100);
+      });
+    }, 300);
+  });
+
+  // Live clock
+  function updateTime() {
+    const now = new Date();
+    const ist = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+    const hh = String(ist.getHours()).padStart(2,'0');
+    const mm = String(ist.getMinutes()).padStart(2,'0');
+    const ss = String(ist.getSeconds()).padStart(2,'0');
+    document.title = `ATLAS NIFTY — ${hh}:${mm}:${ss} IST`;
+  }
+  setInterval(updateTime, 1000);
+  updateTime();
+</script>
+
+</body>
+</html>
